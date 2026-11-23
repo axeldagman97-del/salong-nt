@@ -45,8 +45,9 @@
   font-display: swap;
 }
 
-/* Logotypen: DejaVu Serif under nytt namn. Bantad till latinska tecken
-   (å, ä, ö ingår). Hela originalet ligger i fonts/original/. */
+/* Logotypen: DejaVu Serif Bold 2.37 under nytt namn. Bantad till latinska
+   tecken (å, ä, ö ingår). Fri licens som kräver att licenstexten följer
+   med, se fonts/Salong-NT-Display-DejaVu-LICENSE.txt. */
 @font-face {
   font-family: 'Salong NT Display';
   src: url('../fonts/Salong-NT-Display.woff2') format('woff2');
