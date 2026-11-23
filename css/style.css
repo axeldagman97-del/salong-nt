@@ -1,0 +1,855 @@
+/* =========================================================
+   Salong N.T – stilmall
+
+   Byt färger, typsnitt och mått under "1. Inställningar" för
+   att anpassa sidan till en ny kund. Resten behöver sällan ändras.
+
+   Varje komponent har allt sitt på ett ställe: utseende,
+   mobilanpassning, hover och animationer.
+
+   Principer
+   - Bara transform och opacity animeras (inget i layouten hoppar).
+   - Hover-effekter ligger i @media (hover: hover) så att de inte
+     fastnar på mobiler.
+   - Mobilbrytpunkten är 720px överallt.
+
+   Innehåll
+   1. Inställningar
+   2. Grund
+   3. Hjälpklasser
+   4. Knappar och länkar
+   5. Sidhuvud och meny
+   6. Hero
+   7. Sektioner
+   8. Priser
+   9. Team
+   10. Hitta hit
+   11. Boka
+   12. Sidfot
+   13. Fast bokningsknapp (mobil)
+   14. Intoning vid scroll
+   15. Tillgänglighet
+   ========================================================= */
+
+/* =========================================================
+   1. Inställningar
+   ========================================================= */
+
+/* Brödtext: Familjen Grotesk (fri licens, se fonts/FamiljenGrotesk-OFL.txt).
+   En variabel fil som täcker alla vikter från 400 till 700. */
+@font-face {
+  font-family: 'Familjen Grotesk';
+  src: url('../fonts/FamiljenGrotesk.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Logotypen: DejaVu Serif under nytt namn. Bantad till latinska tecken
+   (å, ä, ö ingår). Hela originalet ligger i fonts/original/. */
+@font-face {
+  font-family: 'Salong NT Display';
+  src: url('../fonts/Salong-NT-Display.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Färger */
+  --lavender: #cdbeeb; /* hero och luggkanten */
+  --lavender-light: #ddd2f2; /* hover på ljusa knappar */
+  --plum: #2e1a3d; /* text och knappar */
+  --plum-hover: #4a2e5e; /* hover på mörka knappar */
+  --plum-soft: #5e4a6e; /* sekundär text */
+  --paper: #faf8fc; /* bakgrund */
+  --mist: #efeaf6; /* alternativ sektionsbakgrund */
+  --line: #dcd3e8; /* linjer */
+  --on-dark-soft: #e4dcee; /* brödtext på mörk bakgrund */
+  --shadow: color-mix(in srgb, var(--plum) 30%, transparent);
+
+  /* Typsnitt */
+  --font-body: 'Familjen Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Salong NT Display', var(--font-body);
+
+  /* Typskala (ungefär 1.25-steg) */
+  --step-0: 1.0625rem;
+  --step-1: 1.33rem;
+  --step-2: 1.66rem;
+  --step-3: clamp(2rem, 4vw, 2.6rem);
+  --step-hero: clamp(2.75rem, 8.5vw, 6.5rem);
+
+  /* Mått */
+  --wrap: 72rem;
+  --gutter: 1.5rem;
+  --header-height: 4.25rem;
+  --radius-pill: 999px;
+  --radius-card: 1rem;
+  --avatar-size: 7.5rem;
+
+  /* Rörelse */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1); /* snabb start, mjuk landning */
+  --dur: 0.2s; /* hover och små skiften */
+  --dur-slow: 0.7s; /* intoning */
+}
+
+/* =========================================================
+   2. Grund
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Ankarlänkar landar under det fasta sidhuvudet */
+  scroll-padding-top: calc(var(--header-height) + 1rem);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  color: var(--plum);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.1;
+  font-weight: 700;
+  text-wrap: balance; /* jämnare radbrytning i rubriker */
+}
+
+h2 {
+  font-size: var(--step-3);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+h3 {
+  font-size: var(--step-1);
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty; /* undviker ensamma ord på sista raden */
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid var(--plum);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   3. Hjälpklasser
+   ========================================================= */
+
+.wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Syns inte, men läses upp av skärmläsare */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--plum);
+  color: var(--paper);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Markerar påhittat innehåll i demon. Sök efter "example-tag" i
+   index.html och ta bort etiketten när riktiga uppgifter finns. */
+.example-tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.1em 0.65em;
+  vertical-align: middle;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--plum);
+  background: var(--paper);
+  border: 1px dashed var(--plum-soft);
+  border-radius: var(--radius-pill);
+}
+
+/* =========================================================
+   4. Knappar och länkar
+   ========================================================= */
+
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.6rem;
+  background: var(--plum);
+  color: var(--paper);
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur),
+    transform var(--dur) var(--ease);
+}
+
+.btn:hover {
+  background: var(--plum-hover);
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Måste ligga efter hover-regeln för att vinna vid klick */
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--small {
+  padding: 0.5rem 1.1rem;
+}
+
+.btn--light {
+  background: var(--lavender);
+  color: var(--plum);
+}
+
+.btn--light:hover {
+  background: var(--lavender-light);
+}
+
+.text-link {
+  font-weight: 500;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* =========================================================
+   5. Sidhuvud och meny
+   ========================================================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--lavender);
+}
+
+/* Skugga som tonar in när man har scrollat (.is-scrolled, js/main.js) */
+.site-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0.75rem;
+  transform: translateY(100%);
+  background: linear-gradient(var(--shadow), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur);
+}
+
+.site-header.is-scrolled::after {
+  opacity: 0.4;
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--header-height);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-2);
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.nav a:not(.btn) {
+  font-weight: 500;
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+
+.nav a:not(.btn):hover {
+  text-decoration: underline;
+}
+
+/* Hamburgerknappen visas bara på mobil */
+.nav-toggle {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  /* ---------- Hamburgare som blir ett kryss ---------- */
+  .nav-toggle {
+    --bar-gap: 7px; /* avståndet mellan strecken */
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .nav-toggle__bar {
+    position: relative;
+  }
+
+  .nav-toggle__bar,
+  .nav-toggle__bar::before,
+  .nav-toggle__bar::after {
+    display: block;
+    width: 1.5rem;
+    height: 2px;
+    background: var(--plum);
+  }
+
+  .nav-toggle__bar::before,
+  .nav-toggle__bar::after {
+    content: '';
+    position: absolute;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .nav-toggle__bar::before {
+    top: calc(-1 * var(--bar-gap));
+  }
+
+  .nav-toggle__bar::after {
+    top: var(--bar-gap);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar {
+    background: transparent;
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar::before {
+    transform: translateY(var(--bar-gap)) rotate(45deg);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar::after {
+    transform: translateY(calc(-1 * var(--bar-gap))) rotate(-45deg);
+  }
+
+  /* ---------- Menyn som fäller ut ---------- */
+  /* Döljs med visibility i stället för display, så att den kan
+     animeras. visibility: hidden håller också länkarna borta från Tab. */
+  .nav {
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem var(--gutter) 2rem;
+    background: var(--lavender);
+    border-bottom: 2px solid var(--plum);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease),
+      visibility 0s linear var(--dur); /* göms först när den tonat ut */
+  }
+
+  .nav.is-open {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s;
+  }
+}
+
+/* =========================================================
+   6. Hero
+   ========================================================= */
+
+.hero {
+  position: relative;
+  padding: 4rem 0 6.5rem;
+  background: var(--lavender);
+}
+
+@media (max-width: 720px) {
+  .hero {
+    padding: 2.5rem 0 5rem;
+  }
+}
+
+/* Rubrik, ingress och knapp glider upp efter varandra.
+   Regeln ligger före elementens egna regler, annars nollställer
+   animation-förkortningen deras animation-delay. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+.hero__title,
+.hero__lead,
+.hero__actions {
+  animation: rise var(--dur-slow) var(--ease) both;
+}
+
+.hero__title {
+  max-width: 11ch;
+  font-size: var(--step-hero);
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+
+.hero__lead {
+  max-width: 32ch;
+  margin-top: 1.75rem;
+  font-size: var(--step-1);
+  animation-delay: 0.12s;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 2.25rem;
+  animation-delay: 0.24s;
+}
+
+/* "Öppet nu", med pulserande prick när det är öppet (.is-open, js/main.js) */
+.hero__today {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--plum-soft);
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.4;
+    transform: scale(0.6);
+  }
+}
+
+.hero__today.is-open::before {
+  content: '';
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--plum);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Den klippta luggkanten under heron. Den startar gömd i heron
+   (samma färg) och glider ner en gång när sidan laddas. */
+@keyframes fringe-cut {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+.hero__fringe {
+  position: absolute;
+  left: 0;
+  bottom: -59px; /* 1px överlapp mot heron, så ingen glipa syns */
+  width: 100%;
+  height: 60px;
+  fill: var(--lavender);
+  animation: fringe-cut 0.9s var(--ease) 0.4s both;
+}
+
+/* =========================================================
+   7. Sektioner
+   ========================================================= */
+
+.section {
+  padding: 6rem 0 5rem;
+}
+
+.section--alt {
+  padding-top: 5rem;
+  background: var(--mist);
+}
+
+.section__lead {
+  max-width: 52ch;
+  margin-bottom: 3rem;
+  color: var(--plum-soft);
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding: 5rem 0 4rem;
+  }
+}
+
+/* =========================================================
+   8. Priser
+   ========================================================= */
+
+.price-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 2.5rem 3.5rem;
+}
+
+.price-group h3 {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--plum);
+}
+
+.price-list {
+  margin: 0;
+}
+
+.price-list__item {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Mörk linje som ritas ut över den ljusa vid hover */
+.price-list__item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--plum);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease);
+}
+
+.price-list__time {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--plum-soft);
+}
+
+.price-list dd {
+  margin: 0;
+  font-weight: 500;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: transform var(--dur) var(--ease);
+}
+
+@media (hover: hover) {
+  .price-list__item:hover::after {
+    transform: scaleX(1);
+  }
+
+  .price-list__item:hover dd {
+    transform: translateX(-0.25rem);
+  }
+}
+
+.perk {
+  max-width: 44rem;
+  margin-top: 3rem;
+  padding: 1.1rem 1.4rem;
+  background: var(--lavender);
+  border-radius: var(--radius-card);
+  font-weight: 500;
+}
+
+/* =========================================================
+   9. Team
+   ========================================================= */
+
+.team {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 2.5rem;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Initial-cirkel och riktiga foton får samma form och rörelse */
+.person__avatar,
+.person img {
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  margin-bottom: 1.25rem;
+  border-radius: 50%;
+  transition: transform 0.35s var(--ease);
+}
+
+.person__avatar {
+  display: grid;
+  place-items: center;
+  background: var(--lavender);
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.person img {
+  object-fit: cover;
+}
+
+.person p {
+  max-width: 30ch;
+  margin-top: 0.4rem;
+  color: var(--plum-soft);
+}
+
+/* Lyft och en liten vridning, som ett klipp med saxen */
+@media (hover: hover) {
+  .person:hover .person__avatar,
+  .person:hover img {
+    transform: translateY(-0.4rem) rotate(-6deg) scale(1.04);
+  }
+}
+
+/* =========================================================
+   10. Hitta hit
+   ========================================================= */
+
+.find {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+@media (max-width: 720px) {
+  .find {
+    grid-template-columns: 1fr;
+  }
+}
+
+.find address {
+  margin: 1.25rem 0 1rem;
+  font-style: normal;
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
+
+.find__directions {
+  max-width: 36ch;
+  margin-bottom: 1.25rem;
+  color: var(--plum-soft);
+}
+
+.find h3 {
+  margin: 0.75rem 0 1rem;
+}
+
+.hours {
+  width: 100%;
+  max-width: 24rem;
+  border-collapse: collapse;
+}
+
+.hours th,
+.hours td {
+  padding: 0.55rem 0;
+  text-align: left;
+  font-weight: 400;
+  border-bottom: 1px solid var(--line);
+}
+
+.hours td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dagens rad markeras av js/main.js */
+.hours .is-today > * {
+  font-weight: 700;
+}
+
+.hours .is-today th::after {
+  content: ' (idag)';
+  font-weight: 400;
+  color: var(--plum-soft);
+}
+
+/* =========================================================
+   11. Boka
+   ========================================================= */
+
+.book {
+  padding: 5rem 0;
+  background: var(--plum);
+  color: var(--paper);
+}
+
+.book p {
+  max-width: 44ch;
+  margin: 0.5rem 0 2rem;
+  color: var(--on-dark-soft);
+}
+
+.book .book__phone {
+  margin: 1.5rem 0 0;
+}
+
+/* =========================================================
+   12. Sidfot
+   ========================================================= */
+
+.site-footer {
+  padding: 2rem 0 2.5rem;
+  font-size: 0.95rem;
+  color: var(--plum-soft);
+}
+
+@media (max-width: 720px) {
+  .site-footer {
+    padding-bottom: 6rem; /* plats för den fasta bokningsknappen */
+  }
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+}
+
+/* Länk med ikon framför, t.ex. Instagram */
+.icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.icon-link__icon {
+  flex-shrink: 0;
+}
+
+/* =========================================================
+   13. Fast bokningsknapp (endast mobil)
+   ========================================================= */
+
+.mobile-book {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .mobile-book {
+    display: block;
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 40;
+    text-align: center;
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+}
+
+/* =========================================================
+   14. Intoning vid scroll
+   Lägg attributet data-reveal på ett element i index.html.
+   js/main.js sätter .is-visible när det syns. Gäller bara när
+   JS körs (.js på <html>), annars syns allt direkt.
+   Syskon tonar in efter varandra.
+   ========================================================= */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity var(--dur-slow) var(--ease),
+    transform var(--dur-slow) var(--ease);
+}
+
+.js [data-reveal]:nth-child(2) {
+  transition-delay: 0.1s;
+}
+
+.js [data-reveal]:nth-child(3) {
+  transition-delay: 0.2s;
+}
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* =========================================================
+   15. Tillgänglighet
+   Ligger sist så att den vinner över allt ovan.
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Visa innehållet direkt i stället för att tona in det */
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
