@@ -1,141 +1,103 @@
 /* =========================================================
    Salong N.T – JavaScript
 
-   Sidan fungerar helt utan JS. Det här lägger bara till:
-   1. Mobilmeny
-   2. Dagens öppettider (öppet nu / öppnar / stängt)
-   3. Skugga på sidhuvudet vid scroll
-   4. Intoning vid scroll ([data-reveal])
+   Sidan fungerar utan JS. Det här lägger till:
+   mobilmeny, dagens öppettider, effekter vid scroll (skugga på
+   sidhuvudet, parallax, intoning) och att mobilens bokningsknapp
+   göms när den inte behövs.
    ========================================================= */
 
-// Talar om för CSS:en att JS körs. Utan klassen visas allt direkt.
-document.documentElement.classList.add('js');
+const $ = (selector) => document.querySelector(selector);
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PARALLAX_SPEED = 0.2; // 0 = bilden följer sidan, 1 = står still
 
-/* ---------- 1. Mobilmeny ---------- */
-function initMobileNav() {
-  const toggle = document.querySelector('.nav-toggle');
-  const nav = document.querySelector('#nav');
-  if (!toggle || !nav) return;
+document.documentElement.classList.add('js'); // CSS:en döljer data-reveal bara när JS körs
 
-  const isOpen = () => nav.classList.contains('is-open');
-  const setOpen = (open) => {
-    nav.classList.toggle('is-open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-  };
+/* ---------- Mobilmeny ---------- */
+const toggle = $('.nav-toggle');
+const nav = $('#nav');
 
-  toggle.addEventListener('click', () => setOpen(!isOpen()));
+const setMenu = (open) => {
+  nav.classList.toggle('is-open', open);
+  toggle.setAttribute('aria-expanded', open);
+};
 
-  // Stäng när man väljer en länk. En lyssnare på menyn räcker för alla länkar.
-  nav.addEventListener('click', (event) => {
-    if (event.target.closest('a')) setOpen(false);
-  });
-
-  // Stäng med Escape och lämna fokus på knappen
-  document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape' || !isOpen()) return;
-    setOpen(false);
+toggle.addEventListener('click', () => setMenu(!nav.classList.contains('is-open')));
+nav.addEventListener('click', (e) => e.target.closest('a') && setMenu(false));
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+    setMenu(false);
     toggle.focus();
-  });
-}
-
-/* ---------- 2. Dagens öppettider ---------- */
-// Läser tiderna från tabellen i index.html, så de behöver bara ändras där.
-// Format som stöds: "10–19", "10-19", "9.30–18" och "Stängt".
-const HOURS_PATTERN =
-  /^(\d{1,2}(?:[.:]\d{2})?)\s*[–-]\s*(\d{1,2}(?:[.:]\d{2})?)$/;
-
-// "9.30" -> 570 (minuter efter midnatt)
-function toMinutes(time) {
-  const [hours, minutes = 0] = time.split(/[.:]/).map(Number);
-  return hours * 60 + minutes;
-}
-
-// Ger texten för dagens status, t.ex. "Öppet nu – stänger 19"
-function describeToday(hours, now) {
-  const match = hours.match(HOURS_PATTERN);
-  if (!match) {
-    return /stängt/i.test(hours)
-      ? { text: 'Stängt idag', isOpen: false }
-      : { text: `Öppet idag ${hours}`, isOpen: false };
   }
+});
 
-  const [, opens, closes] = match;
+/* ---------- Dagens öppettider ----------
+   Läser tabellen i index.html (måndag–söndag i den ordningen).
+   Format: "10–19", "9.30–18" eller "Stängt". */
+const toMinutes = (time) => {
+  const [h, m = 0] = time.split(/[.:]/).map(Number);
+  return h * 60 + m;
+};
+
+function updateToday() {
+  const now = new Date();
+  const rows = document.querySelectorAll('#hours tr');
+  const today = rows[(now.getDay() + 6) % 7]; // getDay(): 0 = söndag
+  rows.forEach((row) => row.classList.toggle('is-today', row === today));
+
+  const hours = today.cells[1].textContent.trim();
+  const [, opens, closes] = hours.match(/^([\d.:]+)\s*[–-]\s*([\d.:]+)$/) ?? [];
   const minutes = now.getHours() * 60 + now.getMinutes();
+  const isOpen = opens && minutes >= toMinutes(opens) && minutes < toMinutes(closes);
 
-  if (minutes < toMinutes(opens))
-    return { text: `Öppnar idag ${opens}`, isOpen: false };
-  if (minutes < toMinutes(closes))
-    return { text: `Öppet nu – stänger ${closes}`, isOpen: true };
-  return { text: 'Stängt för idag', isOpen: false };
+  const status = $('#today-status');
+  status.classList.toggle('is-open', Boolean(isOpen));
+  if (!opens) status.textContent = /stängt/i.test(hours) ? 'Stängt idag' : `Öppet idag ${hours}`;
+  else if (minutes < toMinutes(opens)) status.textContent = `Öppnar idag ${opens}`;
+  else status.textContent = isOpen ? `Öppet nu – stänger ${closes}` : 'Stängt för idag';
 }
 
-function initTodayHours() {
-  const status = document.querySelector('#today-status');
-  const rows = document.querySelectorAll('#hours tr[data-day]');
-  if (!status || !rows.length) return;
+updateToday();
+setInterval(updateToday, 60_000); // håll texten aktuell om sidan står öppen
 
-  const update = () => {
-    const now = new Date();
-    const today = String(now.getDay()); // 0 = söndag, 1 = måndag …
-    let todayRow = null;
+/* ---------- Scroll: skugga på sidhuvudet och parallax ---------- */
+const header = $('.site-header');
+const photo = $('.hero__photo');
+let ticking = false;
 
-    rows.forEach((row) => {
-      const isToday = row.dataset.day === today;
-      row.classList.toggle('is-today', isToday);
-      if (isToday) todayRow = row;
-    });
-    if (!todayRow) return;
-
-    const { text, isOpen } = describeToday(
-      todayRow.cells[1].textContent.trim(),
-      now
-    );
-    status.textContent = text;
-    status.classList.toggle('is-open', isOpen);
-  };
-
-  update();
-  setInterval(update, 60 * 1000); // håll texten aktuell om sidan står öppen
-}
-
-/* ---------- 3. Skugga på sidhuvudet ---------- */
-function initHeaderScroll() {
-  const header = document.querySelector('.site-header');
-  if (!header) return;
-
-  const update = () =>
-    header.classList.toggle('is-scrolled', window.scrollY > 8);
-  update();
-  window.addEventListener('scroll', update, { passive: true });
-}
-
-/* ---------- 4. Intoning vid scroll ---------- */
-// Lägg attributet data-reveal på ett element i index.html så tonar det in.
-function initReveal() {
-  const items = document.querySelectorAll('[data-reveal]');
-  const show = (el) => el.classList.add('is-visible');
-
-  if (!('IntersectionObserver' in window)) {
-    items.forEach(show);
-    return;
+function onScroll() {
+  ticking = false;
+  header.classList.toggle('is-scrolled', scrollY > 8);
+  // Bilden flyttas nedåt med en del av scrollen och glider in bakom priserna
+  if (photo && !reduceMotion && scrollY < innerHeight * 2) {
+    photo.style.setProperty('--parallax', `${scrollY * PARALLAX_SPEED}px`);
   }
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        show(entry.target);
-        observer.unobserve(entry.target); // bara en gång
-      }
-    },
-    { rootMargin: '0px 0px -10% 0px' }
-  );
-
-  items.forEach((el) => observer.observe(el));
 }
 
-/* ---------- Start ---------- */
-initMobileNav();
-initTodayHours();
-initHeaderScroll();
-initReveal();
+addEventListener('scroll', () => ticking || (ticking = requestAnimationFrame(onScroll)), {
+  passive: true,
+});
+onScroll();
+
+/* ---------- Intoning: element med data-reveal tonar in en gång ---------- */
+const revealer = new IntersectionObserver(
+  (entries) =>
+    entries.forEach(({ isIntersecting, target }) => {
+      if (!isIntersecting) return;
+      target.classList.add('is-visible');
+      revealer.unobserve(target);
+    }),
+  { rootMargin: '0px 0px -10% 0px' },
+);
+document.querySelectorAll('[data-reveal]').forEach((el) => revealer.observe(el));
+
+/* ---------- Göm mobilens bokningsknapp vid bokningssektionen och sidfoten ---------- */
+const mobileBook = $('.mobile-book');
+const inView = new Set();
+const bookWatcher = new IntersectionObserver((entries) => {
+  entries.forEach(({ isIntersecting, target }) =>
+    isIntersecting ? inView.add(target) : inView.delete(target),
+  );
+  mobileBook.classList.toggle('is-hidden', inView.size > 0);
+});
+document.querySelectorAll('#boka, .site-footer').forEach((el) => bookWatcher.observe(el));

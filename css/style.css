@@ -1,102 +1,63 @@
 /* =========================================================
    Salong N.T – stilmall
 
-   Byt färger, typsnitt och mått under "1. Inställningar" för
-   att anpassa sidan till en ny kund. Resten behöver sällan ändras.
-
-   Varje komponent har allt sitt på ett ställe: utseende,
-   mobilanpassning, hover och animationer.
-
-   Principer
-   - Bara transform och opacity animeras (inget i layouten hoppar).
-   - Hover-effekter ligger i @media (hover: hover) så att de inte
-     fastnar på mobiler.
-   - Mobilbrytpunkten är 720px överallt.
-
-   Innehåll
-   1. Inställningar
-   2. Grund
-   3. Hjälpklasser
-   4. Knappar och länkar
-   5. Sidhuvud och meny
-   6. Hero
-   7. Sektioner
-   8. Priser
-   9. Team
-   10. Hitta hit
-   11. Boka
-   12. Sidfot
-   13. Fast bokningsknapp (mobil)
-   14. Intoning vid scroll
-   15. Tillgänglighet
+   Färger, typsnitt och mått ligger i :root. Varje komponent har
+   sitt utseende, sin mobilversion och sin hover på ett ställe.
+   - Bara transform och opacity animeras.
+   - Hover ligger i @media (hover: hover), så den inte fastnar på mobil.
+   - Mobilbrytpunkten är 720px.
    ========================================================= */
 
-/* =========================================================
-   1. Inställningar
-   ========================================================= */
-
-/* Brödtext: Familjen Grotesk (fri licens, se fonts/FamiljenGrotesk-OFL.txt).
-   En variabel fil som täcker alla vikter från 400 till 700. */
+/* Brödtext: Familjen Grotesk, variabel 400–700 (licens: fonts/FamiljenGrotesk-OFL.txt) */
 @font-face {
   font-family: 'Familjen Grotesk';
   src: url('../fonts/FamiljenGrotesk.woff2') format('woff2');
   font-weight: 400 700;
-  font-style: normal;
   font-display: swap;
 }
 
-/* Logotypen: DejaVu Serif Bold 2.37 under nytt namn. Bantad till latinska
-   tecken (å, ä, ö ingår). Fri licens som kräver att licenstexten följer
-   med, se fonts/Salong-NT-Display-DejaVu-LICENSE.txt. */
+/* Logotypen: DejaVu Serif Bold 2.37 under nytt namn, bantad till latinska
+   tecken (licens: fonts/Salong-NT-Display-DejaVu-LICENSE.txt) */
 @font-face {
   font-family: 'Salong NT Display';
   src: url('../fonts/Salong-NT-Display.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
   font-display: swap;
 }
 
 :root {
-  /* Färger */
-  --lavender: #cdbeeb; /* hero och luggkanten */
+  --lavender: #cdbeeb; /* hero och sidhuvud */
   --lavender-light: #ddd2f2; /* hover på ljusa knappar */
   --plum: #2e1a3d; /* text och knappar */
-  --plum-hover: #4a2e5e; /* hover på mörka knappar */
+  --plum-hover: #4a2e5e;
   --plum-soft: #5e4a6e; /* sekundär text */
   --paper: #faf8fc; /* bakgrund */
   --mist: #efeaf6; /* alternativ sektionsbakgrund */
-  --line: #dcd3e8; /* linjer */
+  --apricot: #f6d5c1; /* chattrutor med omdömen */
+  --line: #dcd3e8;
   --on-dark-soft: #e4dcee; /* brödtext på mörk bakgrund */
   --shadow: color-mix(in srgb, var(--plum) 30%, transparent);
 
-  /* Typsnitt */
   --font-body: 'Familjen Grotesk', 'Helvetica Neue', Arial, sans-serif;
   --font-display: 'Salong NT Display', var(--font-body);
 
-  /* Typskala (ungefär 1.25-steg) */
   --step-0: 1.0625rem;
   --step-1: 1.33rem;
   --step-2: 1.66rem;
   --step-3: clamp(2rem, 4vw, 2.6rem);
   --step-hero: clamp(2.75rem, 8.5vw, 6.5rem);
 
-  /* Mått */
   --wrap: 72rem;
   --gutter: 1.5rem;
   --header-height: 4.25rem;
   --radius-pill: 999px;
   --radius-card: 1rem;
-  --avatar-size: 7.5rem;
 
-  /* Rörelse */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1); /* snabb start, mjuk landning */
   --dur: 0.2s; /* hover och små skiften */
   --dur-slow: 0.7s; /* intoning */
 }
 
-/* =========================================================
-   2. Grund
-   ========================================================= */
+/* ---------- Grund ---------- */
 
 *,
 *::before,
@@ -106,8 +67,7 @@
 
 html {
   scroll-behavior: smooth;
-  /* Ankarlänkar landar under det fasta sidhuvudet */
-  scroll-padding-top: calc(var(--header-height) + 1rem);
+  scroll-padding-top: calc(var(--header-height) + 1rem); /* ankare landar under sidhuvudet */
 }
 
 body {
@@ -125,8 +85,7 @@ h2,
 h3 {
   margin: 0;
   line-height: 1.1;
-  font-weight: 700;
-  text-wrap: balance; /* jämnare radbrytning i rubriker */
+  text-wrap: balance;
 }
 
 h2 {
@@ -140,9 +99,16 @@ h3 {
   letter-spacing: -0.01em;
 }
 
-p {
+p,
+dl,
+dd,
+figure,
+blockquote {
   margin: 0;
-  text-wrap: pretty; /* undviker ensamma ord på sista raden */
+}
+
+p {
+  text-wrap: pretty;
 }
 
 a {
@@ -160,9 +126,7 @@ img {
   border-radius: 4px;
 }
 
-/* =========================================================
-   3. Hjälpklasser
-   ========================================================= */
+/* ---------- Hjälpklasser ---------- */
 
 .wrap {
   max-width: var(--wrap);
@@ -175,12 +139,9 @@ img {
   position: absolute;
   width: 1px;
   height: 1px;
-  margin: -1px;
-  padding: 0;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
-  border: 0;
 }
 
 .skip-link {
@@ -191,14 +152,13 @@ img {
   padding: 0.5rem 1rem;
   background: var(--plum);
   color: var(--paper);
+
+  &:focus {
+    top: 1rem;
+  }
 }
 
-.skip-link:focus {
-  top: 1rem;
-}
-
-/* Markerar påhittat innehåll i demon. Sök efter "example-tag" i
-   index.html och ta bort etiketten när riktiga uppgifter finns. */
+/* Markerar påhittat innehåll. Ta bort etiketten när riktiga uppgifter finns. */
 .example-tag {
   display: inline-block;
   margin-left: 0.4rem;
@@ -214,9 +174,7 @@ img {
   border-radius: var(--radius-pill);
 }
 
-/* =========================================================
-   4. Knappar och länkar
-   ========================================================= */
+/* ---------- Knappar och länkar ---------- */
 
 .btn {
   display: inline-block;
@@ -229,21 +187,16 @@ img {
   transition:
     background-color var(--dur),
     transform var(--dur) var(--ease);
-}
 
-.btn:hover {
-  background: var(--plum-hover);
-}
-
-@media (hover: hover) {
-  .btn:hover {
-    transform: translateY(-2px);
+  &:hover {
+    background: var(--plum-hover);
+    @media (hover: hover) {
+      transform: translateY(-2px);
+    }
   }
-}
-
-/* Måste ligga efter hover-regeln för att vinna vid klick */
-.btn:active {
-  transform: scale(0.97);
+  &:active {
+    transform: scale(0.97);
+  }
 }
 
 .btn--small {
@@ -253,10 +206,10 @@ img {
 .btn--light {
   background: var(--lavender);
   color: var(--plum);
-}
 
-.btn--light:hover {
-  background: var(--lavender-light);
+  &:hover {
+    background: var(--lavender-light);
+  }
 }
 
 .text-link {
@@ -265,34 +218,28 @@ img {
   text-underline-offset: 4px;
 }
 
-/* =========================================================
-   5. Sidhuvud och meny
-   ========================================================= */
+/* ---------- Sidhuvud och meny ---------- */
 
 .site-header {
   position: sticky;
   top: 0;
   z-index: 50;
   background: var(--lavender);
-}
 
-/* Skugga som tonar in när man har scrollat (.is-scrolled, js/main.js) */
-.site-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 0.75rem;
-  transform: translateY(100%);
-  background: linear-gradient(var(--shadow), transparent);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--dur);
-}
-
-.site-header.is-scrolled::after {
-  opacity: 0.4;
+  /* Skugga som tonar in när man har scrollat (.is-scrolled, js/main.js) */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 100% 0 auto;
+    height: 0.75rem;
+    background: linear-gradient(var(--shadow), transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur);
+  }
+  &.is-scrolled::after {
+    opacity: 0.4;
+  }
 }
 
 .site-header__inner {
@@ -304,7 +251,6 @@ img {
 
 .logo {
   font-family: var(--font-display);
-  font-weight: 400;
   font-size: var(--step-2);
   line-height: 1;
   text-decoration: none;
@@ -314,80 +260,18 @@ img {
   display: flex;
   align-items: center;
   gap: 1.75rem;
-}
 
-.nav a:not(.btn) {
-  font-weight: 500;
-  text-decoration: none;
-  text-underline-offset: 4px;
-}
-
-.nav a:not(.btn):hover {
-  text-decoration: underline;
-}
-
-/* Hamburgerknappen visas bara på mobil */
-.nav-toggle {
-  display: none;
-}
-
-@media (max-width: 720px) {
-  /* ---------- Hamburgare som blir ett kryss ---------- */
-  .nav-toggle {
-    --bar-gap: 7px; /* avståndet mellan strecken */
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    background: none;
-    border: 0;
-    cursor: pointer;
+  & a:not(.btn) {
+    font-weight: 500;
+    text-decoration: none;
+    text-underline-offset: 4px;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
-  .nav-toggle__bar {
-    position: relative;
-  }
-
-  .nav-toggle__bar,
-  .nav-toggle__bar::before,
-  .nav-toggle__bar::after {
-    display: block;
-    width: 1.5rem;
-    height: 2px;
-    background: var(--plum);
-  }
-
-  .nav-toggle__bar::before,
-  .nav-toggle__bar::after {
-    content: '';
-    position: absolute;
-    transition: transform var(--dur) var(--ease);
-  }
-
-  .nav-toggle__bar::before {
-    top: calc(-1 * var(--bar-gap));
-  }
-
-  .nav-toggle__bar::after {
-    top: var(--bar-gap);
-  }
-
-  .nav-toggle[aria-expanded='true'] .nav-toggle__bar {
-    background: transparent;
-  }
-
-  .nav-toggle[aria-expanded='true'] .nav-toggle__bar::before {
-    transform: translateY(var(--bar-gap)) rotate(45deg);
-  }
-
-  .nav-toggle[aria-expanded='true'] .nav-toggle__bar::after {
-    transform: translateY(calc(-1 * var(--bar-gap))) rotate(-45deg);
-  }
-
-  /* ---------- Menyn som fäller ut ---------- */
-  /* Döljs med visibility i stället för display, så att den kan
-     animeras. visibility: hidden håller också länkarna borta från Tab. */
-  .nav {
+  /* Mobil: fälls ut under sidhuvudet. visibility håller länkarna borta från Tab. */
+  @media (max-width: 720px) {
     position: absolute;
     z-index: 1;
     top: 100%;
@@ -402,39 +286,72 @@ img {
     visibility: hidden;
     opacity: 0;
     transform: translateY(-0.5rem);
-    transition:
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease),
-      visibility 0s linear var(--dur); /* göms först när den tonat ut */
-  }
+    transition: all var(--dur) var(--ease);
+    transition-property: opacity, transform, visibility;
 
-  .nav.is-open {
-    visibility: visible;
-    opacity: 1;
-    transform: none;
-    transition-delay: 0s;
+    &.is-open {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+    }
   }
 }
 
-/* =========================================================
-   6. Hero
-   ========================================================= */
+/* Hamburgare som blir ett kryss, bara på mobil */
+.nav-toggle {
+  --bar-gap: 7px;
+  display: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
 
-.hero {
+  @media (max-width: 720px) {
+    display: grid;
+  }
+}
+
+.nav-toggle__bar,
+.nav-toggle__bar::before,
+.nav-toggle__bar::after {
+  display: block;
+  width: 1.5rem;
+  height: 2px;
+  background: var(--plum);
+}
+
+.nav-toggle__bar {
   position: relative;
-  padding: 4rem 0 6.5rem;
-  background: var(--lavender);
-}
 
-@media (max-width: 720px) {
-  .hero {
-    padding: 2.5rem 0 5rem;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    transition: transform var(--dur) var(--ease);
+  }
+  &::before {
+    top: calc(-1 * var(--bar-gap));
+  }
+  &::after {
+    top: var(--bar-gap);
+  }
+
+  [aria-expanded='true'] > & {
+    background: transparent;
+    &::before {
+      transform: translateY(var(--bar-gap)) rotate(45deg);
+    }
+    &::after {
+      transform: translateY(calc(-1 * var(--bar-gap))) rotate(-45deg);
+    }
   }
 }
 
-/* Rubrik, ingress och knapp glider upp efter varandra.
-   Regeln ligger före elementens egna regler, annars nollställer
-   animation-förkortningen deras animation-delay. */
+/* ---------- Hero ---------- */
+
+/* Rubrik, ingress, knapp och bild glider upp efter varandra */
 @keyframes rise {
   from {
     opacity: 0;
@@ -442,9 +359,24 @@ img {
   }
 }
 
+.hero {
+  position: relative;
+  padding: 4rem 0 6.5rem;
+  background: var(--lavender);
+
+  @media (max-width: 720px) {
+    padding: 2.5rem 0 5rem;
+  }
+  /* Med bild slutar heron med bilden */
+  &:has(.hero__photo) {
+    padding-bottom: 0;
+  }
+}
+
 .hero__title,
 .hero__lead,
-.hero__actions {
+.hero__actions,
+.hero__photo {
   animation: rise var(--dur-slow) var(--ease) both;
 }
 
@@ -472,14 +404,6 @@ img {
 }
 
 /* "Öppet nu", med pulserande prick när det är öppet (.is-open, js/main.js) */
-.hero__today {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  color: var(--plum-soft);
-  font-weight: 500;
-}
-
 @keyframes pulse {
   50% {
     opacity: 0.4;
@@ -487,39 +411,73 @@ img {
   }
 }
 
-.hero__today.is-open::before {
-  content: '';
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 50%;
-  background: var(--plum);
-  animation: pulse 2s ease-in-out infinite;
-}
+.hero__today {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--plum-soft);
+  font-weight: 500;
 
-/* Den klippta luggkanten under heron. Den startar gömd i heron
-   (samma färg) och glider ner en gång när sidan laddas. */
-@keyframes fringe-cut {
-  from {
-    transform: translateY(-100%);
+  &.is-open::before {
+    content: '';
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--plum);
+    animation: pulse 2s ease-in-out infinite;
   }
 }
 
-.hero__fringe {
-  position: absolute;
-  left: 0;
-  bottom: -59px; /* 1px överlapp mot heron, så ingen glipa syns */
-  width: 100%;
-  height: 60px;
-  fill: var(--lavender);
-  animation: fringe-cut 0.9s var(--ease) 0.4s both;
+/* Kant i kant. Klipps upptill men inte nedtill, så när js/main.js flyttar
+   bilden nedåt (--parallax) glider den in bakom prissektionens kant. */
+.hero__photo {
+  height: clamp(16rem, 48vw, 36rem);
+  margin-top: 2.5rem;
+  clip-path: inset(0 0 -100vh 0);
+  animation-delay: 0.3s;
+
+  @media (max-width: 720px) {
+    margin-top: 2rem;
+  }
+
+  /* --travel högre än ytan och lika mycket uppflyttad: marginal att röra sig på */
+  & img {
+    --travel: 8rem;
+    position: relative;
+    top: calc(-1 * var(--travel));
+    width: 100%;
+    height: calc(100% + var(--travel));
+    object-fit: cover;
+    object-position: center 60%;
+    transform: translate3d(0, var(--parallax, 0px), 0);
+    will-change: transform;
+  }
 }
 
-/* =========================================================
-   7. Sektioner
-   ========================================================= */
+/* ---------- Sektioner ---------- */
 
 .section {
   padding: 6rem 0 5rem;
+
+  @media (max-width: 720px) {
+    padding: 5rem 0 4rem;
+  }
+}
+
+/* Sektionen efter heron ligger ovanpå heron-bilden */
+.section--over {
+  position: relative;
+  z-index: 1;
+  background: var(--paper);
+}
+
+/* Taggig kant i sektionens överkant, i samma färg som sektionen */
+.fringe {
+  position: absolute;
+  top: -59px; /* 1px överlapp, så ingen glipa syns */
+  width: 100%;
+  height: 60px;
+  fill: var(--paper);
 }
 
 .section--alt {
@@ -533,77 +491,62 @@ img {
   color: var(--plum-soft);
 }
 
-@media (max-width: 720px) {
-  .section {
-    padding: 5rem 0 4rem;
-  }
-}
-
-/* =========================================================
-   8. Priser
-   ========================================================= */
+/* ---------- Priser ---------- */
 
 .price-groups {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
   gap: 2.5rem 3.5rem;
-}
 
-.price-group h3 {
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.6rem;
-  border-bottom: 2px solid var(--plum);
+  & h3 {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--plum);
+  }
 }
 
 .price-list {
-  margin: 0;
-}
+  & div {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
 
-.price-list__item {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid var(--line);
-}
-
-/* Mörk linje som ritas ut över den ljusa vid hover */
-.price-list__item::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 1px;
-  background: var(--plum);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.35s var(--ease);
-}
-
-.price-list__time {
-  display: block;
-  font-size: 0.875rem;
-  color: var(--plum-soft);
-}
-
-.price-list dd {
-  margin: 0;
-  font-weight: 500;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-  transition: transform var(--dur) var(--ease);
-}
-
-@media (hover: hover) {
-  .price-list__item:hover::after {
-    transform: scaleX(1);
+    /* Mörk linje som ritas ut över den ljusa vid hover */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 -1px;
+      height: 1px;
+      background: var(--plum);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s var(--ease);
+    }
+    @media (hover: hover) {
+      &:hover::after {
+        transform: none;
+      }
+      &:hover dd {
+        transform: translateX(-0.25rem);
+      }
+    }
   }
 
-  .price-list__item:hover dd {
-    transform: translateX(-0.25rem);
+  & small {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--plum-soft);
+  }
+
+  & dd {
+    font-weight: 500;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    transition: transform var(--dur) var(--ease);
   }
 }
 
@@ -616,76 +559,163 @@ img {
   font-weight: 500;
 }
 
-/* =========================================================
-   9. Team
-   ========================================================= */
+/* ---------- Frisören ---------- */
 
-.team {
+/* Porträtt bredvid texten, under varandra på smal skärm */
+.person {
+  --size: 11rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 2.5rem;
-  margin: 2.5rem 0 0;
-  padding: 0;
-  list-style: none;
-}
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 1.5rem 3rem;
+  max-width: 48rem;
+  margin-top: 2.5rem;
 
-/* Initial-cirkel och riktiga foton får samma form och rörelse */
-.person__avatar,
-.person img {
-  width: var(--avatar-size);
-  height: var(--avatar-size);
-  margin-bottom: 1.25rem;
-  border-radius: 50%;
-  transition: transform 0.35s var(--ease);
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+
+  & h3 {
+    font-size: var(--step-2);
+  }
+  & p {
+    max-width: 44ch;
+    margin-top: 0.5rem;
+    font-size: var(--step-1);
+    color: var(--plum-soft);
+  }
+
+  /* Foto och initial får samma form. Finns fotot göms initialen;
+     saknas det tas <img> bort (onerror) och initialen syns. */
+  & img,
+  .person__avatar {
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.35s var(--ease);
+  }
+  & img + .person__avatar {
+    display: none;
+  }
+
+  /* Lyft och en liten vridning, som ett klipp med saxen */
+  @media (hover: hover) {
+    &:hover :is(img, .person__avatar) {
+      transform: translateY(-0.4rem) rotate(-6deg) scale(1.04);
+    }
+  }
 }
 
 .person__avatar {
   display: grid;
   place-items: center;
   background: var(--lavender);
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: 700;
 }
 
-.person img {
-  object-fit: cover;
-}
+/* ---------- Omdömen ---------- */
 
-.person p {
-  max-width: 30ch;
-  margin-top: 0.4rem;
+.rating {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  margin: 0.75rem 0 2.5rem;
   color: var(--plum-soft);
-}
 
-/* Lyft och en liten vridning, som ett klipp med saxen */
-@media (hover: hover) {
-  .person:hover .person__avatar,
-  .person:hover img {
-    transform: translateY(-0.4rem) rotate(-6deg) scale(1.04);
+  & strong {
+    color: var(--plum);
   }
 }
 
-/* =========================================================
-   10. Hitta hit
-   ========================================================= */
+.rating__stars {
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+  color: var(--plum);
+}
+
+/* Chattrutor, varannan till vänster och varannan till höger */
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 46rem;
+  margin-bottom: 2.5rem;
+
+  & figure {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: min(34rem, 90%);
+  }
+
+  & blockquote {
+    position: relative;
+    padding: 1.1rem 1.4rem;
+    background: var(--apricot);
+    border-radius: 1.5rem 1.5rem 1.5rem 0.35rem;
+    font-size: var(--step-1);
+    line-height: 1.4;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--plum) 10%, transparent);
+
+    /* Liten pip nere i hörnet */
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -0.5rem;
+      width: 0.9rem;
+      height: 0.9rem;
+      background: inherit;
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    }
+  }
+
+  & figure:nth-child(even) {
+    align-self: flex-end;
+    align-items: flex-end;
+
+    & blockquote {
+      border-radius: 1.5rem 1.5rem 0.35rem 1.5rem;
+    }
+    & blockquote::after {
+      left: auto;
+      right: -0.5rem;
+      clip-path: polygon(0 0, 100% 100%, 0 100%);
+    }
+  }
+
+  & figcaption {
+    padding: 0 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--plum-soft);
+  }
+}
+
+/* ---------- Hitta hit ---------- */
 
 .find {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
-}
 
-@media (max-width: 720px) {
-  .find {
+  @media (max-width: 720px) {
     grid-template-columns: 1fr;
   }
-}
 
-.find address {
-  margin: 1.25rem 0 1rem;
-  font-style: normal;
-  font-size: var(--step-1);
-  line-height: 1.5;
+  & address {
+    margin: 1.25rem 0 1rem;
+    font-style: normal;
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  & h3 {
+    margin: 0.75rem 0 1rem;
+  }
 }
 
 .find__directions {
@@ -694,72 +724,59 @@ img {
   color: var(--plum-soft);
 }
 
-.find h3 {
-  margin: 0.75rem 0 1rem;
-}
-
 .hours {
   width: 100%;
   max-width: 24rem;
   border-collapse: collapse;
+
+  & th,
+  & td {
+    padding: 0.55rem 0;
+    text-align: left;
+    font-weight: 400;
+    border-bottom: 1px solid var(--line);
+  }
+  & td {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Dagens rad markeras av js/main.js */
+  & .is-today > * {
+    font-weight: 700;
+  }
+  & .is-today th::after {
+    content: ' (idag)';
+    font-weight: 400;
+    color: var(--plum-soft);
+  }
 }
 
-.hours th,
-.hours td {
-  padding: 0.55rem 0;
-  text-align: left;
-  font-weight: 400;
-  border-bottom: 1px solid var(--line);
-}
-
-.hours td {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Dagens rad markeras av js/main.js */
-.hours .is-today > * {
-  font-weight: 700;
-}
-
-.hours .is-today th::after {
-  content: ' (idag)';
-  font-weight: 400;
-  color: var(--plum-soft);
-}
-
-/* =========================================================
-   11. Boka
-   ========================================================= */
+/* ---------- Boka ---------- */
 
 .book {
   padding: 5rem 0;
   background: var(--plum);
   color: var(--paper);
+
+  & p {
+    max-width: 44ch;
+    margin: 0.5rem 0 2rem;
+    color: var(--on-dark-soft);
+  }
+  & .book__phone {
+    margin: 1.5rem 0 0;
+  }
 }
 
-.book p {
-  max-width: 44ch;
-  margin: 0.5rem 0 2rem;
-  color: var(--on-dark-soft);
-}
-
-.book .book__phone {
-  margin: 1.5rem 0 0;
-}
-
-/* =========================================================
-   12. Sidfot
-   ========================================================= */
+/* ---------- Sidfot ---------- */
 
 .site-footer {
   padding: 2rem 0 2.5rem;
   font-size: 0.95rem;
   color: var(--plum-soft);
-}
 
-@media (max-width: 720px) {
-  .site-footer {
+  @media (max-width: 720px) {
     padding-bottom: 6rem; /* plats för den fasta bokningsknappen */
   }
 }
@@ -770,45 +787,47 @@ img {
   gap: 0.5rem 2rem;
 }
 
-/* Länk med ikon framför, t.ex. Instagram */
 .icon-link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
 }
 
-.icon-link__icon {
-  flex-shrink: 0;
-}
-
-/* =========================================================
-   13. Fast bokningsknapp (endast mobil)
-   ========================================================= */
+/* ---------- Fast bokningsknapp (bara mobil) ---------- */
 
 .mobile-book {
   display: none;
-}
 
-@media (max-width: 720px) {
-  .mobile-book {
+  @media (max-width: 720px) {
     display: block;
     position: fixed;
-    left: 1rem;
-    right: 1rem;
-    bottom: 1rem;
+    inset: auto 1rem 1rem;
     z-index: 40;
     text-align: center;
-    box-shadow: 0 6px 20px var(--shadow);
+    /* Ljus ring syns mot mörk bakgrund, skuggan lyfter den på ljus */
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--lavender) 70%, transparent),
+      0 4px 10px var(--shadow),
+      0 12px 32px color-mix(in srgb, var(--plum) 35%, transparent);
+    transition:
+      background-color var(--dur),
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease),
+      visibility 0.3s; /* växlar först när den tonat ut */
+
+    /* Göms när bokningssektionen eller sidfoten syns (js/main.js) */
+    &.is-hidden {
+      opacity: 0;
+      transform: translateY(150%);
+      visibility: hidden;
+      pointer-events: none;
+    }
   }
 }
 
-/* =========================================================
-   14. Intoning vid scroll
-   Lägg attributet data-reveal på ett element i index.html.
-   js/main.js sätter .is-visible när det syns. Gäller bara när
-   JS körs (.js på <html>), annars syns allt direkt.
-   Syskon tonar in efter varandra.
-   ========================================================= */
+/* ---------- Intoning vid scroll ----------
+   Element med data-reveal tonar in när de syns (js/main.js sätter
+   .is-visible). Utan JS syns allt direkt. Syskon tonar in efter varandra. */
 
 .js [data-reveal] {
   opacity: 0;
@@ -816,39 +835,31 @@ img {
   transition:
     opacity var(--dur-slow) var(--ease),
     transform var(--dur-slow) var(--ease);
+
+  &:nth-child(2) {
+    transition-delay: 0.1s;
+  }
+  &:nth-child(3) {
+    transition-delay: 0.2s;
+  }
+  &.is-visible {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.js [data-reveal]:nth-child(2) {
-  transition-delay: 0.1s;
-}
-
-.js [data-reveal]:nth-child(3) {
-  transition-delay: 0.2s;
-}
-
-.js [data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* =========================================================
-   15. Tillgänglighet
-   Ligger sist så att den vinner över allt ovan.
-   ========================================================= */
+/* ---------- Minskad rörelse (sist, så den vinner) ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-
   *,
   *::before,
   *::after {
     animation: none !important;
     transition: none !important;
   }
-
-  /* Visa innehållet direkt i stället för att tona in det */
   .js [data-reveal] {
     opacity: 1;
     transform: none;

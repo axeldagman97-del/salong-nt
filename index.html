@@ -5,47 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#cdbeeb" />
     <title>Salong N.T – Frisör i Stockholm City</title>
-    <meta
-      name="description"
-      content="Klippning, färg och styling på Upplandsgatan 10 i Stockholm." />
-
-    <!-- BYT: ta bort när salongen har godkänt sidan.
-         Hindrar Google från att visa demon i sökresultat. -->
+    <meta name="description" content="Klippning, färg och styling på Upplandsgatan 10 i Stockholm." />
+    <!-- BYT: ta bort när salongen har godkänt sidan, så att Google får visa den -->
     <meta name="robots" content="noindex" />
-
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 
-    <!-- Förhandsvisning när länken delas (sms, Messenger, mejl m.m.) -->
+    <!-- Förhandsvisning när länken delas. Bilden måste ha en fullständig adress. -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="sv_SE" />
     <meta property="og:title" content="Salong N.T – Frisör i Stockholm City" />
-    <meta
-      property="og:description"
-      content="Klippning, färg och styling på Upplandsgatan 10 i Stockholm." />
-    <!-- Delningsbilden måste ha en fullständig adress -->
-    <meta
-      property="og:image"
-      content="https://salong-nt-forslag.netlify.app/bilder/delning.png" />
+    <meta property="og:description" content="Klippning, färg och styling på Upplandsgatan 10 i Stockholm." />
+    <meta property="og:image" content="https://salong-nt-forslag.netlify.app/bilder/delning.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Typsnitten ligger lokalt (inga anrop till Google). Båda används
-         högst upp på sidan, så de förladdas. -->
-    <link
-      rel="preload"
-      href="fonts/FamiljenGrotesk.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin />
-    <link
-      rel="preload"
-      href="fonts/Salong-NT-Display.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin />
-
+    <!-- Typsnitten ligger lokalt och används högst upp, så de förladdas -->
+    <link rel="preload" href="fonts/FamiljenGrotesk.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/Salong-NT-Display.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="css/style.css" />
     <script src="js/main.js" defer></script>
   </head>
@@ -53,229 +31,166 @@
   <body>
     <a class="skip-link" href="#main">Hoppa till innehållet</a>
 
-    <!-- =====================================================
-         SIDHUVUD
-         ===================================================== -->
     <header class="site-header">
       <div class="wrap site-header__inner">
-        <a href="#" class="logo">Salong N.T </a>
-
-        <button
-          class="nav-toggle"
-          type="button"
-          aria-expanded="false"
-          aria-controls="nav">
+        <a href="#" class="logo">Salong N.T</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav">
           <span class="nav-toggle__bar"></span>
           <span class="visually-hidden">Meny</span>
         </button>
-
         <nav id="nav" class="nav" aria-label="Huvudmeny">
           <a href="#priser">Priser</a>
-          <a href="#team">Frisörer</a>
+          <a href="#frisoren">Frisören</a>
           <a href="#hitta-hit">Hitta hit</a>
-          <a href="#Oppetider">Öppetider</a>
-          <!-- BYT: länka till salongens bokningssystem, t.ex. Bokadirekt -->
+          <a href="#oppettider">Öppetider</a>
           <a href="#boka" class="btn btn--small">Boka tid</a>
         </nav>
       </div>
     </header>
 
     <main id="main">
-      <!-- =====================================================
-           HERO
-           ===================================================== -->
       <section class="hero">
         <div class="wrap">
           <h1 class="hero__title">Klippt, färgat och fixat i City.</h1>
           <p class="hero__lead">
-            En liten salong med tre frisörer. Vi tar oss tid att lyssna innan
-            saxen kommer fram. <span class="example-tag">Exempel</span>
+            En liten salong med en frisör. Nico tar sig tid att lyssna innan saxen kommer fram.
+            <span class="example-tag">Exempel</span>
           </p>
           <div class="hero__actions">
             <a href="#boka" class="btn">Boka tid</a>
-            <!-- Texten uppdateras automatiskt från öppettiderna nedan -->
+            <!-- Texten sätts av js/main.js utifrån öppettiderna längre ner -->
             <p class="hero__today" id="today-status">Öppet idag 10–19</p>
           </div>
         </div>
-
-        <!-- Den klippta luggkanten -->
-        <svg
-          class="hero__fringe"
-          viewBox="0 0 1200 60"
-          preserveAspectRatio="none"
-          aria-hidden="true">
-          <polygon
-            points="0,0 1200,0 1200,22 1170,48 1140,26 1105,55 1075,30 1040,50 1010,24 975,58 945,28 910,46 880,22 845,54 815,30 780,50 750,26 715,57 685,29 650,47 620,23 585,55 555,31 520,49 490,25 455,58 425,28 390,46 360,22 325,53 295,30 260,50 230,24 195,56 165,29 130,47 100,23 65,54 35,30 0,46" />
-        </svg>
+        <!-- Glider in bakom prissektionens taggiga kant vid scroll. Saknas bilden tas ytan bort. -->
+        <figure class="hero__photo">
+          <img
+            src="bilder/background2.jpg"
+            alt="Salongen inifrån med frisörstolar, speglar och tvättstolar"
+            width="1448"
+            height="1086"
+            fetchpriority="high"
+            onerror="this.parentElement.remove()" />
+        </figure>
       </section>
 
-      <!-- =====================================================
-           PRISER
-           ===================================================== -->
-      <section class="section" id="priser">
+      <section class="section section--over" id="priser">
+        <svg class="fringe" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+          <polygon
+            points="0,60 1200,60 1200,38 1170,12 1140,34 1105,5 1075,30 1040,10 1010,36 975,2 945,32 910,14 880,38 845,6 815,30 780,10 750,34 715,3 685,31 650,13 620,37 585,5 555,29 520,11 490,35 455,2 425,32 390,14 360,38 325,7 295,30 260,10 230,36 195,4 165,31 130,13 100,37 65,6 35,30 0,14" />
+        </svg>
         <div class="wrap">
           <h2>Priser <span class="example-tag">Exempel</span></h2>
           <p class="section__lead">
-            Alla priser inkluderar tvätt och styling. Osäker på vad du behöver?
-            Boka en kostnadsfri konsultation på 15 minuter.
+            Alla priser inkluderar tvätt och styling. Osäker på vad du behöver? Boka en kostnadsfri
+            konsultation på 15 minuter.
           </p>
 
+          <!-- prettier-ignore -->
           <div class="price-groups">
-            <!-- Klippning -->
-            <div class="price-group" data-reveal>
+            <div data-reveal>
               <h3>Klippning</h3>
               <dl class="price-list">
-                <div class="price-list__item">
-                  <dt>Kort hår <span class="price-list__time">30 min</span></dt>
-                  <dd>550 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>
-                    Långt hår <span class="price-list__time">45 min</span>
-                  </dt>
-                  <dd>690 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>
-                    Herrklippning <span class="price-list__time">30 min</span>
-                  </dt>
-                  <dd>495 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>
-                    Barn upp till 12 år
-                    <span class="price-list__time">20 min</span>
-                  </dt>
-                  <dd>350 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>
-                    Luggklippning <span class="price-list__time">10 min</span>
-                  </dt>
-                  <dd>150 kr</dd>
-                </div>
+                <div><dt>Kort hår <small>30 min</small></dt><dd>550 kr</dd></div>
+                <div><dt>Långt hår <small>45 min</small></dt><dd>690 kr</dd></div>
+                <div><dt>Herrklippning <small>30 min</small></dt><dd>495 kr</dd></div>
+                <div><dt>Barn upp till 12 år <small>20 min</small></dt><dd>350 kr</dd></div>
+                <div><dt>Luggklippning <small>10 min</small></dt><dd>150 kr</dd></div>
               </dl>
             </div>
-
-            <!-- Färg -->
-            <div class="price-group" data-reveal>
+            <div data-reveal>
               <h3>Färg</h3>
               <dl class="price-list">
-                <div class="price-list__item">
-                  <dt>Toning <span class="price-list__time">60 min</span></dt>
-                  <dd>650 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>
-                    Färg på utväxt <span class="price-list__time">90 min</span>
-                  </dt>
-                  <dd>950 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>
-                    Slingor, halvt huvud
-                    <span class="price-list__time">2 h</span>
-                  </dt>
-                  <dd>1 450 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>Balayage <span class="price-list__time">3 h</span></dt>
-                  <dd>från 2 200 kr</dd>
-                </div>
+                <div><dt>Toning <small>60 min</small></dt><dd>650 kr</dd></div>
+                <div><dt>Färg på utväxt <small>90 min</small></dt><dd>950 kr</dd></div>
+                <div><dt>Slingor, halvt huvud <small>2 h</small></dt><dd>1 450 kr</dd></div>
+                <div><dt>Balayage <small>3 h</small></dt><dd>från 2 200 kr</dd></div>
               </dl>
             </div>
-
-            <!-- Styling -->
-            <div class="price-group" data-reveal>
+            <div data-reveal>
               <h3>Styling</h3>
               <dl class="price-list">
-                <div class="price-list__item">
-                  <dt>
-                    Tvätt och föning
-                    <span class="price-list__time">30 min</span>
-                  </dt>
-                  <dd>450 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>
-                    Uppsättning <span class="price-list__time">45 min</span>
-                  </dt>
-                  <dd>850 kr</dd>
-                </div>
-                <div class="price-list__item">
-                  <dt>
-                    Brudfrisyr med provning
-                    <span class="price-list__time">2 × 60 min</span>
-                  </dt>
-                  <dd>2 400 kr</dd>
-                </div>
+                <div><dt>Tvätt och föning <small>30 min</small></dt><dd>450 kr</dd></div>
+                <div><dt>Uppsättning <small>45 min</small></dt><dd>850 kr</dd></div>
+                <div><dt>Brudfrisyr med provning <small>2 × 60 min</small></dt><dd>2 400 kr</dd></div>
               </dl>
             </div>
           </div>
 
           <p class="perk" data-reveal>
-            Har du klippt dig hos oss? Då putsar vi luggen gratis mellan besöken
-            – titta bara in.
+            Har du klippt dig hos oss? Då putsar vi luggen gratis mellan besöken – titta bara in.
           </p>
         </div>
       </section>
 
-      <!-- =====================================================
-           TEAM
-           ===================================================== -->
-      <section class="section section--alt" id="team">
+      <section class="section section--alt" id="frisoren">
         <div class="wrap">
-          <h2>Frisörerna <span class="example-tag">Exempel</span></h2>
-          <!-- BYT: ersätt initialerna med riktiga porträttfoton,
-               t.ex. <img src="bilder/lina.jpg" alt="Lina" /> -->
-          <ul class="team">
-            <li class="person" data-reveal>
-              <div class="person__avatar" aria-hidden="true">L</div>
-              <h3>Lina</h3>
-              <p>Färg och balayage. Har jobbat i salongen sedan starten.</p>
-            </li>
-            <li class="person" data-reveal>
-              <div class="person__avatar" aria-hidden="true">O</div>
-              <h3>Omar</h3>
+          <h2>Din frisör <span class="example-tag">Exempel</span></h2>
+          <!-- BILD: lägg ett kvadratiskt porträtt som bilder/nico.jpg. Saknas det visas initialen. -->
+          <div class="person" data-reveal>
+            <img
+              src="bilder/nico.jpg"
+              alt="Nico"
+              width="400"
+              height="400"
+              loading="lazy"
+              onerror="this.remove()" />
+            <div class="person__avatar" aria-hidden="true">N</div>
+            <div>
+              <h3>Nico</h3>
               <p>
-                Herrklippning och fades. Snabb, noggrann och pratar gärna
-                fotboll.
+                Har klippt i över tjugo år, först i Tysta Mariagången och nu på Upplandsgatan. Här är det
+                samma frisör varje gång, som minns hur du vill ha det.
               </p>
-            </li>
-            <li class="person" data-reveal>
-              <div class="person__avatar" aria-hidden="true">S</div>
-              <h3>Sara</h3>
-              <p>
-                Lockigt och krulligt hår. Klipper torrt för att se hur lockarna
-                faller.
-              </p>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- =====================================================
-           HITTA HIT
-           ===================================================== -->
-      <section class="section" id="hitta-hit">
+      <!-- Citaten är ordagranna Google-omdömen från kundernas.se/salong-nt -->
+      <section class="section" id="omdomen">
+        <div class="wrap">
+          <h2>Vad kunderna säger</h2>
+          <p class="rating">
+            <span class="rating__stars" aria-hidden="true">★★★★★</span>
+            <span><strong>5,0 av 5</strong> i snitt från 120 omdömen på Google</span>
+          </p>
+          <div class="chat">
+            <figure data-reveal>
+              <blockquote>
+                Det är alltid lika trevligt att komma hit. Har varit kund sen över tjugo år sen Nt låg i tysta
+                maria gången.
+              </blockquote>
+              <figcaption>Conny H.</figcaption>
+            </figure>
+            <figure data-reveal>
+              <blockquote>Mycket kompetent! Skärpt intellekt &amp; intressanta samtal. Tack.</blockquote>
+              <figcaption>Reinhold F.</figcaption>
+            </figure>
+            <figure data-reveal>
+              <blockquote>Jättetrevlig frisör som alltid får mig nöjd!</blockquote>
+              <figcaption>Hans Ö.</figcaption>
+            </figure>
+          </div>
+          <a class="text-link" href="https://kundernas.se/salong-nt" target="_blank" rel="noopener">
+            Läs fler omdömen
+          </a>
+        </div>
+      </section>
+
+      <section class="section section--alt" id="hitta-hit">
         <div class="wrap find">
           <div data-reveal>
             <h2>Hitta hit</h2>
             <address>
-              <a
-                href="https://maps.google.com/?q=Upplandsgatan+10,+111+60+Stockholm"
-                >Upplandsgatan 10
-              </a>
-              <br />
+              <a href="https://maps.google.com/?q=Upplandsgatan+10,+111+60+Stockholm">Upplandsgatan 10</a
+              ><br />
               111 60 Stockholm<br />
-              <!-- BYT: kontrollera att numret är salongens.
-                   Lägg till e-post här när den finns:
-                   <br /><a href="mailto:…">…</a> -->
-              <a href="tel:+46762389449">+46 76 238 94 49</a>
+              <a href="tel:+46733993497">+46 73 399 34 97</a>
             </address>
             <p class="find__directions">
-              Fem minuter från tunnelbanan. Vi ligger i gatuplan, utan
-              trappsteg. <span class="example-tag">Exempel</span>
+              Fem minuter från tunnelbanan. Vi ligger i gatuplan, utan trappsteg.
+              <span class="example-tag">Exempel</span>
             </p>
             <a
               class="text-link"
@@ -286,112 +201,80 @@
             </a>
           </div>
 
-          <div data-reveal id="Oppetider">
+          <div data-reveal id="oppettider">
             <h3>Öppettider <span class="example-tag">Exempel</span></h3>
-            <!-- data-day: 0 = söndag, 1 = måndag … 6 = lördag -->
+            <!-- Raderna måste stå måndag–söndag: js/main.js räknar ut dagen från ordningen -->
             <table class="hours" id="hours">
-              <tbody>
-                <tr data-day="1">
-                  <th scope="row">Måndag</th>
-                  <td>10–19</td>
-                </tr>
-                <tr data-day="2">
-                  <th scope="row">Tisdag</th>
-                  <td>10–19</td>
-                </tr>
-                <tr data-day="3">
-                  <th scope="row">Onsdag</th>
-                  <td>10–19</td>
-                </tr>
-                <tr data-day="4">
-                  <th scope="row">Torsdag</th>
-                  <td>10–20</td>
-                </tr>
-                <tr data-day="5">
-                  <th scope="row">Fredag</th>
-                  <td>10–19</td>
-                </tr>
-                <tr data-day="6">
-                  <th scope="row">Lördag</th>
-                  <td>10–16</td>
-                </tr>
-                <tr data-day="0">
-                  <th scope="row">Söndag</th>
-                  <td>Stängt</td>
-                </tr>
-              </tbody>
+              <tr>
+                <th>Måndag</th>
+                <td>10–19</td>
+              </tr>
+              <tr>
+                <th>Tisdag</th>
+                <td>10–19</td>
+              </tr>
+              <tr>
+                <th>Onsdag</th>
+                <td>10–19</td>
+              </tr>
+              <tr>
+                <th>Torsdag</th>
+                <td>10–20</td>
+              </tr>
+              <tr>
+                <th>Fredag</th>
+                <td>10–19</td>
+              </tr>
+              <tr>
+                <th>Lördag</th>
+                <td>10–16</td>
+              </tr>
+              <tr>
+                <th>Söndag</th>
+                <td>Stängt</td>
+              </tr>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- =====================================================
-           BOKA
-           ===================================================== -->
       <section class="book" id="boka">
         <div class="wrap" data-reveal>
           <h2>Boka din tid <span class="example-tag">Exempel</span></h2>
           <p>
-            Välj frisör och behandling och se lediga tider direkt. Du kan avboka
-            kostnadsfritt fram till 24 timmar innan.
+            Ring Nico så hittar ni en tid som passar. Du kan avboka kostnadsfritt fram till 24 timmar innan.
           </p>
-          <!-- BYT: länka till salongens bokningssida -->
-          <a href="#" class="btn btn--light">Se lediga tider</a>
-          <p class="book__phone">
-            Hellre ringa? <a href="tel:+46762389449"> +46 76 238 94 49</a>
-          </p>
+          <a href="tel:+46733993497" class="btn btn--light">Ring för att boka</a>
+          <p class="book__phone">Tel: <a href="tel:+46733993497"> +46 73 399 34 97</a></p>
         </div>
       </section>
     </main>
 
-    <!-- =====================================================
-         SIDFOT
-         ===================================================== -->
     <footer class="site-footer">
       <div class="wrap site-footer__inner">
         <p>Salong N.T, Upplandsgatan 10, 111 60 Stockholm</p>
         <p>
-          <a
-            href="https://www.instagram.com/salong_nt/"
-            target="_blank"
-            rel="noopener"
-            class="icon-link">
+          <a href="https://www.instagram.com/salong_nt/" target="_blank" rel="noopener" class="icon-link">
             <svg
-              class="icon-link__icon"
               viewBox="0 0 24 24"
               width="18"
               height="18"
               fill="none"
               stroke="currentColor"
               stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
               aria-hidden="true">
               <rect x="3" y="3" width="18" height="18" rx="5" />
               <circle cx="12" cy="12" r="4" />
-              <circle
-                cx="17.3"
-                cy="6.7"
-                r="0.6"
-                fill="currentColor"
-                stroke="none" />
+              <circle cx="17.3" cy="6.7" r="0.6" fill="currentColor" stroke="none" />
             </svg>
             Instagram</a
           >
         </p>
-        <p>
-          <!-- BYT: gärna till salongens omdömen på Google -->
-          <a
-            href="https://kundernas.se/salong-nt"
-            target="_blank"
-            rel="noopener"
-            >Omdömen</a
-          >
-        </p>
+        <p><a href="https://kundernas.se/salong-nt" target="_blank" rel="noopener">Omdömen</a></p>
       </div>
     </footer>
 
-    <!-- Fast bokningsknapp, visas bara på mobil -->
-    <a href="#boka" class="btn mobile-book">Boka tid</a>
+    <!-- Visas bara på mobil. Göms när bokningssektionen eller sidfoten syns. -->
+    <a href="tel:+46733993497" class="btn mobile-book">Ring och boka 073-399 34 97</a>
   </body>
 </html>
