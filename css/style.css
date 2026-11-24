@@ -33,6 +33,8 @@
   --paper: #faf8fc; /* bakgrund */
   --mist: #efeaf6; /* alternativ sektionsbakgrund */
   --apricot: #f6d5c1; /* chattrutor med omdömen */
+  --open: #1e8a4a; /* prick när det är öppet */
+  --closed: #9b1c2c; /* prick när det är stängt */
   --line: #dcd3e8;
   --on-dark-soft: #e4dcee; /* brödtext på mörk bakgrund */
   --shadow: color-mix(in srgb, var(--plum) 30%, transparent);
@@ -418,12 +420,17 @@ img {
   color: var(--plum-soft);
   font-weight: 500;
 
-  &.is-open::before {
+  /* Mörkröd när det är stängt, grön och pulserande när det är öppet.
+     Bara med JS, annars vet sidan inte om det är öppet. */
+  .js &::before {
     content: '';
     width: 0.55rem;
     height: 0.55rem;
     border-radius: 50%;
-    background: var(--plum);
+    background: var(--closed);
+  }
+  .js &.is-open::before {
+    background: var(--open);
     animation: pulse 2s ease-in-out infinite;
   }
 }
